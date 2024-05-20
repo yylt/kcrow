@@ -1,6 +1,6 @@
 include ../../Makefile.defs
 
-TARGET := ../../bin/daemon
+TARGET := daemon
 
 all: $(TARGET)
 
