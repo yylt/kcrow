@@ -33,23 +33,23 @@ jobs:
   #
   # Project checks
   #
-  project:
-    name: Project Checks
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
+  # project:
+  #   name: Project Checks
+  #   runs-on: ubuntu-22.04
+  #   timeout-minutes: 5
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          path: src/github.com/kcrow-io/kcrow
-          fetch-depth: 100
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         path: src/github.com/kcrow-io/kcrow
+  #         fetch-depth: 100
 
-      - uses: ./src/github.com/kcrow-io/kcrow/.github/actions/install-go
+  #     - uses: ./src/github.com/kcrow-io/kcrow/.github/actions/install-go
 
-      - name: verify build
-        run: |
-          make binaries
-        working-directory: src/github.com/kcrow-io/kcrow
+  #     - name: verify build
+  #       run: |
+  #         make binaries
+  #       working-directory: src/github.com/kcrow-io/kcrow
 
   #
   # Integration on linux
@@ -58,31 +58,28 @@ jobs:
     name: Linux Integration
     runs-on: ${{ matrix.os }}
     timeout-minutes: 40
-    needs: [project, linters]
 
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-22.04]
 
     steps:
       - uses: actions/checkout@v4
-      - run: tools/scripts/install-gotestsum
-      - run: tools/scripts/install-teststat
       - uses: yylt/k3s-gha@master
         with:
           k3s_arguments: "--disable=servicelb,traefik,local-storage,metrics-server,runtimes --disable-helm-controller  --disable-cloud-controller --disable-network-policy"
           containerd_toml_path: "./tests/config/containerd-1.x.toml"
 
       - uses: ./.github/actions/install-go
-      - name: build and run
-        run: |
-          make binaries
-          (./bin/daemon daemon &)
-
-      - name: Tests
+      - name: run e2e
         env:
-          GOTESTSUM_JUNITFILE: ${{github.workspace}}/test-unit-root-junit.xml
-          GOTESTSUM_JSONFILE: ${{github.workspace}}/test-unit-root-gotest.json
+          KUBECONFIG: ${{ github.workspace }}/k3s.yaml
+        shell: bash
         run: |
-          echo TODO
+          set -ex
+          sudo -E ls /var/run/nri
+          make
+          nohup sudo -E output/*/bin/daemon daemon -v=4 --kubeconfig=./k3s.yaml >log 2>&1  &
+          sleep 2
+          make e2e
+          cat log

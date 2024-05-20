@@ -51,6 +51,7 @@ func (h *Hub) Start() {
 				return nil
 			default:
 				st.Stop()
+				klog.Errorf("server exist, errmsg: %v", err)
 				return fmt.Errorf("server exist, errmsg: %v", err)
 			}
 		}, 0)
