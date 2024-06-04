@@ -45,11 +45,11 @@ jobs:
           path: src/github.com/kcrow-io/kcrow
           fetch-depth: 100
 
-      - uses: ./src/github.com/kcrow-io/kcrow/.github/actions/install-go
+      - uses: ./.github/actions/install-go
 
       - name: verify build
         run: |
-          make binaries
+          make build-bin
         working-directory: src/github.com/kcrow-io/kcrow
 
   

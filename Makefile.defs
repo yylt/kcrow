@@ -69,6 +69,8 @@ GO_BUILD_TIME = $(shell date "+%Y-%m-%d@%H:%M:%S")
 GO_BUILD_LDFLAGS =
 # go build/test -tags values
 GO_TAGS_FLAGS = osusergo
+GOOS ?= $(shell go env GOOS)
+GOARCH ?= $(shell go env GOARCH)
 
 # This is declared here as it is needed to change the covermode depending on if
 # RACE is specified.
