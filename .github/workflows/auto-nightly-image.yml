@@ -5,7 +5,7 @@ permissions: write-all
 on:
   schedule:
     # each day
-    - cron: "0 9 * * *"
+    - cron: "0 0 * * *"
   workflow_call:
     inputs:
       ref:
@@ -14,7 +14,6 @@ on:
       push:
         required: true
         type: string
-  workflow_dispatch:
     
 env:
   BUILD_PLATFORM: linux/amd64,linux/arm64
@@ -54,16 +53,12 @@ jobs:
               echo "trigger by workflow_call"
               echo "tag=${{ inputs.ref }}" >> $GITHUB_ENV
               echo "push=${{ inputs.push }}" >> $GITHUB_ENV
-          elif ${{ github.event_name == 'push' }} ; then
-              echo "trigger by push"
-              echo "tag=${{ github.sha }}" >> $GITHUB_ENV
-              echo "push=false" >> $GITHUB_ENV
           elif ${{ github.event_name == 'workflow_dispatch' }} ; then
               echo "trigger by workflow_dispatch"
               echo "tag=main" >> $GITHUB_ENV
               echo "push=true" >> $GITHUB_ENV
           elif ${{ github.event_name == 'schedule' }} ; then
-              echo "trigger by schedule"
+              echo "trigger by cron schedule"
               echo "tag=main" >> $GITHUB_ENV
               echo "push=true" >> $GITHUB_ENV
           else
