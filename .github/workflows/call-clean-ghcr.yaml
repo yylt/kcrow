@@ -38,15 +38,16 @@ jobs:
   purge-image:
     name: Delete image from ghcr.io
     runs-on: ubuntu-latest
+    
     steps:
       - name: Get Arg
         id: args
         run: |
-          # weizhoublue/github_action_test
           # repo=${{ github.repository }}
           org=kcrow-io #${{ github.repository_owner }}
           # github_action_test
           repo=kcrow
+          
           echo "repo_name=${repo}" >> $GITHUB_ENV
           echo "org_name=${org}" >> $GITHUB_ENV
           if ${{ inputs.image_name != '' }} ; then

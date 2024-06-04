@@ -19,7 +19,7 @@ env:
   BUILD_PLATFORM: linux/amd64,linux/arm64
   ONLINE_REGISTER: ghcr.io
   ONLINE_REGISTER_USER: ${{ github.actor }}
-  ONLINE_REGISTER_PASSWORD: ${{ secrets.PUSH_TOKEN }}
+  ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build-and-push:
@@ -55,7 +55,7 @@ jobs:
               echo "push=${{ inputs.push }}" >> $GITHUB_ENV
           elif ${{ github.event_name == 'workflow_dispatch' }} ; then
               echo "trigger by workflow_dispatch"
-              echo "tag=main" >> $GITHUB_ENV
+              echo "tag=${{ github.event.inputs.ref }}" >> $GITHUB_ENV
               echo "push=true" >> $GITHUB_ENV
           elif ${{ github.event_name == 'schedule' }} ; then
               echo "trigger by cron schedule"
