@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/actions/install-go
 
+
       - name: Build Binary
         run: |
           GOARCH=${{ matrix.arch }} make build-bin install-bin
