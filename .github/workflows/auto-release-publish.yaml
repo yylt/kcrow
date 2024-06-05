@@ -1,4 +1,4 @@
-name: Call Release Plesase
+name: Auto Release Publish
 
 on:
   push:
@@ -36,13 +36,13 @@ jobs:
         with:
           type: zip
           filename: kcrow-linux-${{ matrix.arch }}.zip
-          path: ./output/${{ matrix.arch }}/bin/
+          directory: ./output/${{ matrix.arch }}/bin
 
       - name: Publish
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: kcrow-linux-${{ matrix.arch }}.zip
+          files: ./output/${{ matrix.arch }}/bin/kcrow-linux-${{ matrix.arch }}.zip
           generate_release_notes: true
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: true
